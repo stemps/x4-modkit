@@ -18,6 +18,15 @@ docstring states the convention. It reads `translations.json` for format
 exemptions and reports every problem in one run. Mod-specific text contracts
 (for example which entries must escape `%`) stay in the mod's own tests.
 
+`scaffold.py` (`x4mod new`) renders `templates/` (`@TOKEN@` placeholders, escaped
+per file type) into a new repository. It takes the justfile's shared block from
+`shared.just` and generates the translation files from `translations.LANGUAGES`, so
+it owns no second copy of either; it then runs `doctor` and `translations` on the
+result and deletes it if either fails. `test_scaffold.py` also runs the live release
+checks against a fresh scaffold (only in the kit's own suite, not per mod).
+
+`src/content.xml` is the only required runtime manifest; `ui.xml` ships when present.
+
 ## Release flow
 
 `just release` requires clean `main` tracking and matching `origin/main`. It

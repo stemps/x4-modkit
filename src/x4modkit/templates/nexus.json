@@ -1,0 +1,11 @@
+{
+  "game": "x4foundations",
+  "mod_id": null,
+  "file_id": null,
+  "create_new_file": true,
+  "display_name": "@MOD_NAME@",
+  "description": "@DESCRIPTION@",
+  "category": "main",
+  "archive_existing_file": false,
+  "update_mod_version": true
+}

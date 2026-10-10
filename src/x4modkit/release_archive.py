@@ -88,8 +88,9 @@ def working_files(root, local=False):
 
 
 def require_manifests(files):
-    if not {'content.xml', 'ui.xml'}.issubset(files):
-        raise ReleaseError('Missing runtime manifests: content.xml and ui.xml are required.')
+    # ui.xml is optional: only mods with Lua UI addons ship one.
+    if 'content.xml' not in files:
+        raise ReleaseError('Missing runtime manifest: content.xml is required.')
 
 
 def write_zip(path, files, read):

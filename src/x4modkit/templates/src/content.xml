@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<content id="@MOD_ID@"
+  name="@MOD_NAME@"
+  description="@DESCRIPTION@"
+  author="@AUTHOR@"
+  version="0"
+  date="@DATE@"
+  save="@SAVE@"
+  enabled="true">
+  <dependency version="900" name="X4: Foundations" />
+</content>

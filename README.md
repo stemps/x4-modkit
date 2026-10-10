@@ -34,11 +34,32 @@ Read from the environment variable first, then `~/.config/x4-modkit/paths.env`
 
 `x4mod config` shows what resolved and where from.
 
+## Starting a new mod
+
+```bash
+x4mod new better_trading "Better Trading" --description "Smarter trade offers."
+```
+
+creates `better_trading/` (a git repository on `main`, nothing committed) that
+already passes `doctor`, `translations` and the release checks: manifest, English
+source and all 15 translation files, licence copies, manual, `nexus.json`, the
+justfile with the shared block, and AGENTS/ARCHITECTURE/KNOWLEDGEBASE stubs.
+
+- `--save` sets `save="true"`. Leave it off for UI-only mods; turn it on when the mod
+  adds content saves depend on (removing such a mod can break saves).
+- `--page` picks the text page id. The default is derived from the id
+  (900000-999999): `t/` files are unioned across all mods, so pages must not collide.
+- `--author` defaults to `git config user.name`; `--dir` to the current folder.
+
+Before the first `just release`: push `main` to a remote and put the Nexus page id
+into `nexus.json` (`create_new_file: true` is for that first upload only).
+
 ## A mod repository
 
-Expected layout: `src/` is the shipped mod (`content.xml`, `ui.xml`), with
-`VERSION`, `CHANGELOG.md`, `docs/MANUAL.md` and optional `nexus.json`, `steam.json`,
-`discord.json` at the root. Every mod-specific name comes from `src/content.xml`.
+Expected layout: `src/` is the shipped mod (`content.xml`; `ui.xml` only for mods
+with Lua UI), with `CHANGELOG.md`, `docs/MANUAL.md` and `nexus.json` at the root,
+optionally `steam.json` and `discord.json`. `VERSION` appears with the first release.
+Every mod-specific name comes from `src/content.xml`.
 
 Paste the output of `x4mod justfile` at the end of the mod's justfile. It defines
 `check-release`, which depends on the mod's own `check` recipe, plus `release`,
@@ -49,8 +70,9 @@ Paste the output of `x4mod justfile` at the end of the mod's justfile. It define
 - **doctor** fails on drift: a leftover copy of a kit file (`scripts/release.py`,
   `tests/release/`, ...) or a shared justfile block that differs from the kit's.
 - **test** runs the kit's suite with its live checks pointed at this mod: the shipped
-  `ui.xml` modules are packaged, both license copies match, the manual renders for Nexus
-  and Steam, and `nexus.json`/`steam.json`/`discord.json` are valid.
+  `ui.xml` modules are packaged (if the mod has a `ui.xml`), both license copies match,
+  the manual renders for Nexus and Steam, and `nexus.json`/`steam.json`/`discord.json`
+  are valid.
 
 ## Translations
 

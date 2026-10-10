@@ -1,0 +1,14 @@
+# Requires just, uv and x4mod (x4-modkit) on PATH. Commands run from this file's directory.
+set windows-shell := ["powershell.exe", "-NoLogo", "-NoProfile", "-Command"]
+
+# List available tasks.
+default:
+    @just --list
+
+# ---------------------------------------------------------------------------
+# Mod checks
+# ---------------------------------------------------------------------------
+
+# Everyday gate. Add this mod's own checks (tests, validation) as dependencies.
+check: translations
+

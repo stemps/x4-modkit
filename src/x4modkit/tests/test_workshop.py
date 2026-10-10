@@ -75,6 +75,8 @@ class ManifestTests(unittest.TestCase):
     def test_live_manifest_and_config_are_compatible(self):
         root = MOD_ROOT
         cfg = workshop_build.config(root)
+        if cfg is None:
+            self.skipTest('this mod has no steam.json')
         out = workshop_manifest((root / 'src' / 'content.xml').read_bytes(), '1234', cfg['workshop_dependencies'])
         from xml.etree import ElementTree as ET
         parsed = ET.fromstring(out)

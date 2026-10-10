@@ -9,7 +9,7 @@ from pathlib import Path
 import subprocess
 import sys
 
-from . import doctor, gamelink, gamelog, release, settings, translations
+from . import doctor, gamelink, gamelog, release, scaffold, settings, translations
 from .release_archive import ReleaseError, find_root
 
 RELEASE_HELP = {
@@ -23,7 +23,7 @@ RELEASE_HELP = {
 }
 RELEASE_COMMANDS = tuple(RELEASE_HELP)
 TEST_MODULES = ('test_release', 'test_manual_bbcode', 'test_nexus', 'test_archive',
-                'test_release_support', 'test_workshop', 'test_discord', 'test_translations', 'test_kit')
+                'test_release_support', 'test_workshop', 'test_discord', 'test_translations', 'test_scaffold', 'test_kit')
 
 
 def run_tests(root, verbose=False):
@@ -73,6 +73,15 @@ def parser():
     sub.add_parser('doctor', help='report drift: stale copies of kit files, edited shared justfile block')
     sub.add_parser('justfile', help='print the shared justfile block to paste into a mod')
     sub.add_parser('config', help='show the resolved machine-local paths and where each came from')
+    new = sub.add_parser('new', help='create a new mod repository that already passes the kit checks')
+    new.add_argument('id', help='content.xml id and folder name: lowercase letters, digits, underscores')
+    new.add_argument('name', help='display name, e.g. "Better Trading"')
+    new.add_argument('--description', help='one-line description for content.xml, Nexus and the manual')
+    new.add_argument('--author', help='default: git config user.name')
+    new.add_argument('--page', type=int, help='text page id (default: derived from the id, 900000-999999)')
+    new.add_argument('--save', action='store_true',
+                     help='content.xml save="true": needed when the mod adds content saves depend on')
+    new.add_argument('--dir', type=Path, default=Path('.'), help='parent folder (default: current folder)')
     return cli
 
 
@@ -92,6 +101,15 @@ def main(argv=None):
                   + ('' if settings.config_path().is_file() else ' (missing)'))
             for key, text in settings.KEYS.items():
                 print(f'{key:16} {settings.get(key) or "-"}  [{settings.source(key) or "unset"}] {text}')
+            return 0
+        if args.command == 'new':
+            target, page = scaffold.create(args.dir / args.id, args.id, args.name, args.description,
+                                           args.author, args.page, args.save)
+            save = 'true' if args.save else 'false'
+            print(f'Created {target.resolve()} (text page {page}, save="{save}").')
+            print('Next: add your files under src/, extend the `check` recipe, `just link` to test in game.')
+            print('Before the first `just release`: push main to a remote and put the Nexus mod id '
+                  'into nexus.json.')
             return 0
         if args.command == 'test' and args.sample:
             return run_tests(None, args.verbose)

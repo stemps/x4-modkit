@@ -161,6 +161,15 @@ class CliTests(Temp):
         with self.assertRaises(SystemExit), contextlib.redirect_stderr(io.StringIO()):
             cli.main(['doctor', '--bogus'])
 
+    def test_new_creates_a_mod_through_the_cli(self):
+        code, out, _ = self.run_cli('new', 'cli_mod', 'CLI Mod', '--author', 'Test', '--dir', str(self.base))
+        self.assertEqual(code, 0)
+        self.assertIn('Created', out)
+        self.assertTrue((self.base / 'cli_mod' / 'src' / 't' / '0001.xml').is_file())
+        code, _, err = self.run_cli('new', 'cli_mod', 'CLI Mod', '--author', 'Test', '--dir', str(self.base))
+        self.assertEqual(code, 1)
+        self.assertIn('already exists', err)
+
     def test_test_list_covers_every_test_module(self):
         modules = {p.stem for p in Path(__file__).parent.glob('test_*.py')}
         self.assertEqual(modules, set(cli.TEST_MODULES))

@@ -22,6 +22,8 @@ class ArchiveTests(unittest.TestCase):
 
     def test_current_manifest_modules_are_included(self):
         from xml.etree import ElementTree as ET
+        if not (REPO / 'src/ui.xml').exists():
+            self.skipTest('this mod has no src/ui.xml')
         modules = [node.attrib['name'] for node in ET.parse(REPO / 'src/ui.xml').iter('file')]
         self.assertTrue(modules)
         self.fixture.write('src/ui.xml', (REPO / 'src/ui.xml').read_text(encoding='utf-8'))
@@ -107,9 +109,15 @@ class ArchiveTests(unittest.TestCase):
         self.assertEqual(rebuilt.read_bytes(), expected)
 
     def test_missing_manifest_fails(self):
-        (self.root / 'src/ui.xml').unlink()
-        with self.assertRaisesRegex(ReleaseError, 'Missing runtime manifests'):
+        (self.root / 'src/content.xml').unlink()
+        with self.assertRaisesRegex(ReleaseError, 'Missing runtime manifest'):
             local_zip(self.root)
+
+    def test_ui_manifest_is_optional(self):
+        self.fixture.cmd('rm', '-q', 'src/ui.xml')
+        with zipfile.ZipFile(local_zip(self.root)) as archive:
+            self.assertNotIn('example_mod/ui.xml', archive.namelist())
+            self.assertIn('example_mod/content.xml', archive.namelist())
 
     def test_tag_reconstruction_is_identical_and_ignores_worktree(self):
         archive = self.fixture.run_release()
