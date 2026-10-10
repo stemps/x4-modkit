@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<content id="sample_mod" name="Sample Mod" description="x4-modkit test fixture." author="x4-modkit" version="100" date="2026-10-10" save="false" enabled="true">
+  <dependency id="kuerteeUIExtensionsAndHUD" version="300" name="kuertee UI Extensions and HUD" />
+</content>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<addon name="sample_mod">
+  <environment type="menus">
+    <file name="ui/sample_one.lua" />
+    <dependency name="ego_detailmonitor" />
+    <file name="ui/sample_two.lua" />
+  </environment>
+</addon>

@@ -1,0 +1,11 @@
+{
+  "game": "x4foundations",
+  "mod_id": 1,
+  "file_id": "1",
+  "create_new_file": false,
+  "display_name": "Sample Mod",
+  "description": "x4-modkit test fixture.",
+  "category": "main",
+  "archive_existing_file": false,
+  "update_mod_version": true
+}
